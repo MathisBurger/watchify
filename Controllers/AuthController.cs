@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using watchify.Models.Database;
 using watchify.Models.Request;
 using watchify.Shared;
 
@@ -17,8 +18,8 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("[action]")]
-    public async Task<IActionResult> Register([FromBody] RegisterRequest request)
+    public async Task<ActionResult<User>> Register([FromBody] RegisterRequest request)
     {
-        return Ok();
+        return await Db.UserRepository.RegisterUser(request);
     }
 }

@@ -18,6 +18,7 @@ public class Startup
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var jwtSigningKey = Configuration.GetValue<string>("Authorization:JWTSigningKey");
             services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
@@ -25,6 +26,9 @@ public class Startup
                 .AddSingleton<IPasswordHasher, Argon2IdHasher>()
                 .AddDbContext<DatabaseContext>()
                 .AddSingleton<DbAccess>()
+                .AddSingleton<IAuthorization>((services) => jwtSigningKey == null
+                    ? new JWTAuthorization()
+                    : new JWTAuthorization(jwtSigningKey))
                 .AddSingleton<IConfiguration>(Configuration);
 
             services.AddSwaggerGen(options =>
