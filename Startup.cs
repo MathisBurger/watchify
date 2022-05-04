@@ -1,4 +1,5 @@
 using Microsoft.OpenApi.Models;
+using watchify.Shared;
 
 namespace watchify;
 
@@ -17,6 +18,8 @@ public class Startup
             services.AddControllers();
 
             services
+                .AddDbContext<DatabaseContext>()
+                .AddSingleton<DbAccess>()
                 .AddSingleton<IConfiguration>(Configuration);
 
             services.AddSwaggerGen(options =>
