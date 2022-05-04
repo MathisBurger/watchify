@@ -1,10 +1,13 @@
 using Microsoft.EntityFrameworkCore;
+using watchify.Models.Database;
 
 namespace watchify.Shared;
 
 public class DatabaseContext : DbContext
 {
     private readonly IConfiguration config;
+    
+    public DbSet<User> Users { get; set; }
     
     public DatabaseContext(IConfiguration config)
     {

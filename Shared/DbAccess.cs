@@ -1,13 +1,15 @@
+using watchify.Modules;
+using watchify.Repository;
+
 namespace watchify.Shared;
 
 public class DbAccess
 {
+    public readonly UserRepository UserRepository;
 
-    private readonly DatabaseContext Ctx;
-
-    public DbAccess(DatabaseContext ctx)
+    public DbAccess(DatabaseContext ctx, IPasswordHasher hasher)
     {
-        Ctx = ctx;
+        UserRepository = new UserRepository(ctx, hasher);
     }
 
 }
