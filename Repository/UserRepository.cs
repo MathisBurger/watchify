@@ -9,10 +9,10 @@ namespace watchify.Repository;
 public class UserRepository
 {
 
-    private readonly DbContext ctx;
+    private readonly DatabaseContext ctx;
     private readonly IPasswordHasher hasher;
 
-    public UserRepository(DbContext ctx, IPasswordHasher hasher)
+    public UserRepository(DatabaseContext ctx, IPasswordHasher hasher)
     {
         this.ctx = ctx;
         this.hasher = hasher;
@@ -26,6 +26,25 @@ public class UserRepository
         ctx.Add(user);
         await ctx.SaveChangesAsync();
         return user;
+    }
+
+    public async Task<bool> LoginUser(LoginRequest request)
+    {
+        var user = await FindUserByUsername(request.Username);
+        if (user == null)
+        {
+            return false;
+        }
+
+        if (!hasher.CompareHashAndPassword(user.Password, request.Password)) return false;
+        return true;
+    }
+
+    public async Task<User?> FindUserByUsername(string username)
+    {
+        return await ctx.Users
+            .Where(u => u.Username == username)
+            .FirstOrDefaultAsync();
     }
 
 }
