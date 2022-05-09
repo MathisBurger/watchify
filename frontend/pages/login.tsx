@@ -5,16 +5,24 @@ import TextInput from "../components/form/TextInput";
 import {useState} from "react";
 import Button from "../components/Button";
 import useApiService from "../hooks/useApiService";
+import {useRouter} from "next/router";
+import {useSnackbar} from "notistack";
 
 const Login: NextPage = () => {
     
     const api = useApiService();
+    const router = useRouter();
+    const {enqueueSnackbar} = useSnackbar();
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     
     const login = async () => {
-        const response = await api.login(username, password);
-        console.log(response);
+        try {
+            await api.login(username, password);
+            await router.push('/dashboard');
+        } catch (e) {
+            enqueueSnackbar("Login failed", {variant: "error"});
+        }
     }
     
     return (
@@ -33,6 +41,7 @@ const Login: NextPage = () => {
                     type="password" 
                 />
                 <Button label="Login" onClick={login} />
+                <h5 className={styles.loginLink} onClick={() => router.push("/register")}>Register</h5>
             </div>
         </div>
     );

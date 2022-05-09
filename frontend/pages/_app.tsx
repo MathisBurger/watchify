@@ -2,6 +2,7 @@ import type { AppProps } from 'next/app'
 import React from 'react';
 import Head from 'next/head';
 import '../styles/globals.scss';
+import {SnackbarProvider} from "notistack";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -12,7 +13,9 @@ function MyApp({ Component, pageProps }: AppProps) {
           <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@500&display=swap" rel="stylesheet" />
           <title>Watchify</title>
         </Head>
-        <Component {...pageProps} />
+          <SnackbarProvider>
+              <Component {...pageProps} />
+          </SnackbarProvider>
       </React.Fragment>
   );
 }
