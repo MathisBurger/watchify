@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using watchify.Modules;
 using watchify.Shared;
@@ -24,8 +25,9 @@ public class Startup
 
             services
                 .AddSingleton<IPasswordHasher, Argon2IdHasher>()
-                .AddDbContext<DatabaseContext>()
-                .AddSingleton<DbAccess>()
+                .AddDbContext<IContext, DatabaseContext>(ctx => 
+                    ctx.UseNpgsql(Configuration.GetValue<string>("DB:connString")))
+                .AddScoped<DbAccess>()
                 .AddSingleton<IAuthorization>((services) => jwtSigningKey == null
                     ? new JWTAuthorization()
                     : new JWTAuthorization(jwtSigningKey))
@@ -35,6 +37,8 @@ public class Startup
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Watchify API endpoints", Version = "v1" });
             });
+            services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,19 +47,20 @@ public class Startup
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
-                app.UseCors(options =>
-                {
-                    options
-                        .AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
+                app.UseCors(cors => cors
+                    .WithOrigins("https://localhost:3000")
+                    .AllowAnyHeader()
+                    .AllowAnyMethod()
+                    .AllowCredentials());
+                app.UseSwagger();
+                app.UseSwaggerUI();
+                app.UseHttpsRedirection();
             }
 
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseHttpsRedirection();
 
             app.UseSwagger();
 

@@ -7,7 +7,7 @@ public class DbAccess
 {
     public readonly UserRepository UserRepository;
 
-    public DbAccess(DatabaseContext ctx, IPasswordHasher hasher)
+    public DbAccess(IContext ctx, IPasswordHasher hasher)
     {
         UserRepository = new UserRepository(ctx, hasher);
     }

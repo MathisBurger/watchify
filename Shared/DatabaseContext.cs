@@ -3,7 +3,7 @@ using watchify.Models.Database;
 
 namespace watchify.Shared;
 
-public class DatabaseContext : DbContext
+public class DatabaseContext : DbContext, IContext
 {
     private readonly IConfiguration config;
     
