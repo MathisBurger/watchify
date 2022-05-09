@@ -10,7 +10,8 @@ public interface IContext : IDisposable
 {
     
     DbSet<User> Users { get; set; }
-    
+    DbSet<Video> Videos { get; set; }
+
     DatabaseFacade Database { get; }
 
     EntityEntry Add([NotNull] object entity);
