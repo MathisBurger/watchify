@@ -1,9 +1,16 @@
 import type { NextPage } from 'next';
+import {useEffect} from "react";
+import {useRouter} from "next/router";
 
 const Home: NextPage = () => {
-  return (
-    <div>Hello world</div>
-  )
+  
+  const router = useRouter();
+  
+  useEffect(() => {
+    router.push("/dashboard");
+  }, []);
+  
+  return <div />;
 }
 
 export default Home
