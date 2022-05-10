@@ -32,7 +32,7 @@ public class Startup
                 .AddSingleton<IAuthorization>((services) => jwtSigningKey == null
                     ? new JWTAuthorization()
                     : new JWTAuthorization(jwtSigningKey))
-                .AddSingleton<VideoService>()
+                .AddScoped<VideoService>()
                 .AddSingleton<IConfiguration>(Configuration);
 
             services.AddSwaggerGen(options =>
@@ -76,5 +76,11 @@ public class Startup
             {
                 endpoints.MapControllers();
             });
+            
+            using (var scope = app.ApplicationServices.CreateScope())
+            using (var db = scope.ServiceProvider.GetService<IContext>()!)
+            {
+                //db.Database.Migrate();
+            }
         }
     }
