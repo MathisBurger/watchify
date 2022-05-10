@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using watchify.Modules;
+using watchify.Services;
 using watchify.Shared;
 
 namespace watchify;
@@ -31,6 +32,7 @@ public class Startup
                 .AddSingleton<IAuthorization>((services) => jwtSigningKey == null
                     ? new JWTAuthorization()
                     : new JWTAuthorization(jwtSigningKey))
+                .AddSingleton<VideoService>()
                 .AddSingleton<IConfiguration>(Configuration);
 
             services.AddSwaggerGen(options =>

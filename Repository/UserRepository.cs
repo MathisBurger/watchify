@@ -6,7 +6,7 @@ using watchify.Shared;
 
 namespace watchify.Repository;
 
-public class UserRepository : IRepository
+public class UserRepository : IRepository<User?>
 {
 
     private readonly IContext ctx;
@@ -47,4 +47,8 @@ public class UserRepository : IRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<User?> FindOneById(Guid id)
+    {
+        return await ctx.Users.FindAsync(id);
+    }
 }
