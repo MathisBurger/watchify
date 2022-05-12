@@ -20,13 +20,13 @@ export default class RestService {
         emptyResponse: boolean = false
     ): Promise<T> {
         const fetchResult = await window.fetch(path, {
-            body: body ? JSON.stringify(body) : undefined,
+            body: body,
             method: method,
             mode: process.env.NODE_ENV === "production" ? "same-origin" : "cors",
             headers: {
                 'Content-Type': contentType
             },
-            credentials: process.env.NODE_ENV === "production" ? "same-origin" : "omit"
+            credentials: process.env.NODE_ENV === "production" ? "same-origin" : "include"
         });
         if (fetchResult.status === 401) {
             throw new Error("Unauthorized");
@@ -60,10 +60,11 @@ export default class RestService {
      * @param path The path to the resp endpoint
      * @param body The http body of the request
      * @param emptyResponse If the response has no json body
+     * @param contentType The content type that is used for the request
      * @return Promise<T> The response as generic promise
      */
-    protected async post<T>(path: string, body: any, emptyResponse: boolean = false): Promise<T> {
-        return await RestService.fetchEndpoint<T>("POST", path, body, 'application/json', emptyResponse);
+    protected async post<T>(path: string, body: any, emptyResponse: boolean = false, contentType: string = 'application/json'): Promise<T> {
+        return await RestService.fetchEndpoint<T>("POST", path, body, contentType, emptyResponse);
     }
 
     /**

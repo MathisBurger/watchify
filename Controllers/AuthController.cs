@@ -53,5 +53,5 @@ public class AuthController : ControllerBase
         Response.Cookies.Append(Constants.SESSION_COOKIE_NAME, sessionJwt, cookieOptions);
         Response.Headers.AccessControlExposeHeaders = "Set-Cookie";
         return Ok();
-    } 
+    }
 }

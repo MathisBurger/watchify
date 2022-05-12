@@ -38,28 +38,22 @@ public class VideoController : AuthorizedControllerBase
 
     [RateLimitFilter(5, 10)]
     [TypeFilter(typeof(FiltersAuthorization))]
-    [Consumes("multipart/form-data")]
+    //[Consumes("image/png")]
     [HttpPost("[action]")]
-    public async Task<ActionResult<Video>> UploadVideo(List<IFormFile> files, [FromQuery] string videoId)
+    public async Task<ActionResult<Video>> UploadVideo([FromBody] IFormFile myFile, [FromQuery] string videoId)
     {
-        Console.WriteLine(files.Count);
-        if (files.Count != 1)
-        {
-            return BadRequest("Please send only one file via the request");
-        }
-
-        var formFile = files[0];
-        if (formFile.Length > 0)
+        
+        if (myFile.Length > 0)
         {
             var videoEntity = await Db.VideoRepository.FindOneById(Guid.Parse(videoId));
             if (videoEntity == null || videoEntity.Owner.Id != AuthorizedUser.Id)
             {
                 return BadRequest("Video does not exist or you do not have access to it");
             }
-            Console.WriteLine(formFile.ContentType);
+            Console.WriteLine(myFile.ContentType);
             var filePath = Path.Combine(Configuration["StoredFilesPath"], videoId.ToString());
             var stream = System.IO.File.Create(filePath);
-            await formFile.CopyToAsync(stream);
+            await myFile.CopyToAsync(stream);
             stream.Close();
 
             return Ok("Successfully uploaded video");
