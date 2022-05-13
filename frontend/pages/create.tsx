@@ -30,10 +30,14 @@ const CreatePage: NextPage = () => {
             const vid = Object.assign({}, video);
             vid.tags = chipData;
             const creationResult = await api.createVideo(vid);
-            console.log(creationResult);
             let formData = new FormData();
-            formData.append('myFile', files[0]);
-            await api.uploadVideo(formData, creationResult.id);
+            formData.append('key', files[0]);
+            try {
+                await api.uploadVideo(formData, creationResult.id);
+                enqueueSnackbar("Successfully uploaded", {variant: "error"});
+            } catch (e: any) {
+                enqueueSnackbar(e.message, {variant: "error"});
+            }
         } else {
             enqueueSnackbar("Please select your video file first", {variant: "error"});
         }

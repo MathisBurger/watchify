@@ -42,6 +42,12 @@ public static class FileHelpers
                     new byte[] { 0x57, 0x69, 0x6E, 0x5A, 0x69, 0x70 },
                 }
             },
+            {
+                ".mp4", new List<byte[]>
+                {
+                    new byte[] { 0x6D, 0x70, 0x34, 0x32 }
+                }
+            }
         };
 
         // **WARNING!**

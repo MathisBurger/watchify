@@ -22,7 +22,7 @@ public class VideoController : AuthorizedControllerBase
     private readonly VideoService VideoService;
     private readonly IConfiguration Configuration;
     private readonly int _fileSizeLimit;
-    private readonly string[] _permittedExtensions = { ".jpg" };
+    private readonly string[] _permittedExtensions = { ".jpg", ".png", ".mp4" };
 
     public VideoController(DbAccess db, IAuthorization auth, VideoService videoService, IConfiguration configuration)
     {
@@ -30,7 +30,7 @@ public class VideoController : AuthorizedControllerBase
         Auth = auth;
         VideoService = videoService;
         Configuration = configuration;
-        _fileSizeLimit = 10000;
+        _fileSizeLimit = 2097152;
     }
 
     [RateLimitFilter(5, 10)]
@@ -46,9 +46,14 @@ public class VideoController : AuthorizedControllerBase
     [TypeFilter(typeof(FiltersAuthorization))]
     [HttpPost("[action]")]
     [DisableFormValueModelBinding]
-    [ValidateAntiForgeryToken]
-    public async Task<ActionResult<Video>> UploadVideo()
+    public async Task<ActionResult<Video>> UploadVideo([FromQuery] Guid videoId)
     {
+        var video = await Db.VideoRepository.FindOneById(videoId);
+        if (video == null || video.Owner.Id != AuthorizedUser.Id)
+        {
+            return Unauthorized();
+        }
+        
         if (!MultipartRequestHelper.IsMultipartContentType(Request.ContentType))
         {
             ModelState.AddModelError("File", 
@@ -59,7 +64,7 @@ public class VideoController : AuthorizedControllerBase
 
         var boundary = MultipartRequestHelper.GetBoundary(
             MediaTypeHeaderValue.Parse(Request.ContentType),
-            100000);
+            _fileSizeLimit);
         var reader = new MultipartReader(boundary, HttpContext.Request.Body);
         var section = await reader.ReadNextSectionAsync();
 
@@ -71,12 +76,8 @@ public class VideoController : AuthorizedControllerBase
 
             if (hasContentDispositionHeader)
             {
-                // This check assumes that there's a file
-                // present without form data. If form data
-                // is present, this method immediately fails
-                // and returns the model error.
                 if (!MultipartRequestHelper
-                    .HasFileContentDisposition(contentDisposition))
+                        .HasFileContentDisposition(contentDisposition))
                 {
                     ModelState.AddModelError("File", 
                         $"The request couldn't be processed (Error 2).");
@@ -86,11 +87,10 @@ public class VideoController : AuthorizedControllerBase
                 }
                 else
                 {
-                    // Don't trust the file name sent by the client. To display
-                    // the file name, HTML-encode the value.
                     var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                             contentDisposition.FileName.Value);
-                    var trustedFileNameForFileStorage = Path.GetRandomFileName();
+                    var trustedFileNameForFileStorage =
+                        videoId.ToString() + '.' + trustedFileNameForDisplay.Split(".").Last().ToString();
 
                     // **WARNING!**
                     // In the following example, the file is saved without
@@ -111,7 +111,7 @@ public class VideoController : AuthorizedControllerBase
                     }
 
                     using (var targetStream = System.IO.File.Create(
-                        Path.Combine("./", trustedFileNameForFileStorage)))
+                        Path.Combine("./videos/", trustedFileNameForFileStorage)))
                     {
                         await targetStream.WriteAsync(streamedFileContent);
                     }

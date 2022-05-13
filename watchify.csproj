@@ -24,6 +24,7 @@
     <ItemGroup>
       <Folder Include="ClientApp" />
       <Folder Include="Migrations" />
+      <Folder Include="videos" />
     </ItemGroup>
 
 </Project>

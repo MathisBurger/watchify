@@ -10,14 +10,14 @@ class ApiService extends RestService {
         return await this.post<any>(`${ORIGIN}/Auth/Login`, JSON.stringify({
             username,
             password
-        }), true);
+        }), true, 'application/json');
     }
     
     public async register(username: string, password: string): Promise<RegisterResponse> {
         return await this.post<RegisterResponse>(`${ORIGIN}/Auth/Register`, JSON.stringify({
             username, 
             password,
-        }))
+        }), false, 'application/json')
     }
     
     public async me(): Promise<any> {
@@ -25,11 +25,11 @@ class ApiService extends RestService {
     }
     
     public async createVideo(input: CreateVideo): Promise<any> {
-        return await this.post<any>(`${ORIGIN}/Video/CreateVideo`, JSON.stringify(input));
+        return await this.post<any>(`${ORIGIN}/Video/CreateVideo`, JSON.stringify(input), false, 'application/json');
     }
     
     public async uploadVideo(formData: FormData, videoID: string): Promise<any> {
-        return await this.post<any>(`${ORIGIN}/Video/UploadVideo?videoId=${videoID}`, formData, false, 'multipart/form-data');
+        return await this.post<any>(`${ORIGIN}/Video/UploadVideo?videoId=${videoID}`, formData, true, undefined);
     }
 }
 

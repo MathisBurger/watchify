@@ -16,16 +16,16 @@ export default class RestService {
         method: string,
         path: string,
         body?: any,
-        contentType: string | undefined = 'application/json',
+        contentType?: string,
         emptyResponse: boolean = false
     ): Promise<T> {
         const fetchResult = await window.fetch(path, {
             body: body,
             method: method,
             mode: process.env.NODE_ENV === "production" ? "same-origin" : "cors",
-            headers: {
+            headers: contentType ? {
                 'Content-Type': contentType
-            },
+            }: undefined,
             credentials: process.env.NODE_ENV === "production" ? "same-origin" : "include"
         });
         if (fetchResult.status === 401) {
@@ -51,7 +51,7 @@ export default class RestService {
      * @return Promise<T> The response as generic promise
      */
     protected async get<T>(path: string): Promise<T> {
-        return await RestService.fetchEndpoint<T>("GET", path);
+        return await RestService.fetchEndpoint<T>("GET", path, undefined, 'application/json');
     }
 
     /**
@@ -63,7 +63,7 @@ export default class RestService {
      * @param contentType The content type that is used for the request
      * @return Promise<T> The response as generic promise
      */
-    protected async post<T>(path: string, body: any, emptyResponse: boolean = false, contentType: string = 'application/json'): Promise<T> {
+    protected async post<T>(path: string, body: any, emptyResponse: boolean = false, contentType?: string): Promise<T> {
         return await RestService.fetchEndpoint<T>("POST", path, body, contentType, emptyResponse);
     }
 
@@ -74,6 +74,6 @@ export default class RestService {
      * @param body The body of the delete request
      */
     protected async delete<T>(path: string, body?: any): Promise<T> {
-        return await RestService.fetchEndpoint<T>("DELETE", path, body);
+        return await RestService.fetchEndpoint<T>("DELETE", path, body, 'application/json');
     }
 }
