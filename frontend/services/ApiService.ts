@@ -29,7 +29,7 @@ class ApiService extends RestService {
     }
     
     public async uploadVideo(formData: FormData, videoID: string): Promise<any> {
-        return await this.post<any>(`${ORIGIN}/Video/UploadVideo?videoId=${videoID}`, formData, false, 'image/png');
+        return await this.post<any>(`${ORIGIN}/Video/UploadVideo?videoId=${videoID}`, formData, false, 'multipart/form-data');
     }
 }
 

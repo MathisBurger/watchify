@@ -2,6 +2,7 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using watchify.Attributes;
 using watchify.Modules;
 using watchify.Services;
 using watchify.Shared;
@@ -38,6 +39,18 @@ public class Startup
             services.AddSwaggerGen(options =>
             {
                 options.SwaggerDoc("v1", new OpenApiInfo { Title = "Watchify API endpoints", Version = "v1" });
+            });
+            services.AddRazorPages(options =>
+            {
+                options.Conventions
+                    .AddPageApplicationModelConvention("/StreamedSingleFileUploadPhysical",
+                        model =>
+                        {
+                            model.Filters.Add(
+                                new GenerateAntiforgeryTokenCookieAttribute());
+                            model.Filters.Add(
+                                new DisableFormValueModelBindingAttribute());
+                        });
             });
             services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
