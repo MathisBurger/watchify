@@ -43,30 +43,35 @@ public static class FileHelpers
                 }
             },
             {
+                ".mov", new List<byte[]>
+                {
+                    new byte[] { 0x6D, 0x6F, 0x6F, 0x76 },
+                    new byte[] { 0x62, 0x72, 0x65, 0x65 },
+                    new byte[] { 0x6D, 0x64, 0x61, 0x74 },
+                    new byte[] { 0x77, 0x69, 0x64, 0x65 },
+                    new byte[] { 0x70, 0x6E, 0x6F, 0x74 },
+                    new byte[] { 0x73, 0x6B, 0x69, 0x70 }
+                }
+            },
+            {
                 ".mp4", new List<byte[]>
                 {
-                    new byte[] { 0x6D, 0x70, 0x34, 0x32 }
+                    new byte[] { 0x66, 0x74, 0x79, 0x70 },
+                    new byte[] { 0x6D, 0x6D, 0x70, 0x34 },
+                    new byte[] { 0x6D, 0x64, 0x61, 0x74 },
+                    new byte[] { 0x00, 0x04, 0xA2, 0x7B },
+                    new byte[] { 0x00, 0x00, 0x18, 0x3A },
+                    new byte[] { 0x6D, 0x6F, 0x6F, 0x76 }
                 }
             }
         };
-
-        // **WARNING!**
-        // In the following file processing methods, the file's content isn't scanned.
-        // In most production scenarios, an anti-virus/anti-malware scanner API is
-        // used on the file before making the file available to users or other
-        // systems. For more information, see the topic that accompanies this sample
-        // app.
 
         public static async Task<byte[]> ProcessFormFile<T>(IFormFile formFile, 
             ModelStateDictionary modelState, string[] permittedExtensions, 
             long sizeLimit)
         {
             var fieldDisplayName = string.Empty;
-
-            // Use reflection to obtain the display name for the model
-            // property associated with this IFormFile. If a display
-            // name isn't found, error messages simply won't show
-            // a display name.
+            
             MemberInfo property =
                 typeof(T).GetProperty(
                     formFile.Name.Substring(formFile.Name.IndexOf(".",
@@ -80,14 +85,9 @@ public static class FileHelpers
                     fieldDisplayName = $"{displayAttribute.Name} ";
                 }
             }
-
-            // Don't trust the file name sent by the client. To display
-            // the file name, HTML-encode the value.
+            
             var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                 formFile.FileName);
-
-            // Check the file length. This check doesn't catch files that only have 
-            // a BOM as their content.
             if (formFile.Length == 0)
             {
                 modelState.AddModelError(formFile.Name, 
@@ -111,10 +111,7 @@ public static class FileHelpers
                 using (var memoryStream = new MemoryStream())
                 {
                     await formFile.CopyToAsync(memoryStream);
-
-                    // Check the content length in case the file's only
-                    // content was a BOM and the content is actually
-                    // empty after removing the BOM.
+                    
                     if (memoryStream.Length == 0)
                     {
                         modelState.AddModelError(formFile.Name,
@@ -154,9 +151,9 @@ public static class FileHelpers
             {
                 using (var memoryStream = new MemoryStream())
                 {
+                    Console.WriteLine(contentDisposition.FileName.Value);
                     await section.Body.CopyToAsync(memoryStream);
-
-                    // Check if the file is empty or exceeds the size limit.
+                    
                     if (memoryStream.Length == 0)
                     {
                         modelState.AddModelError("File", "The file is empty.");
@@ -168,8 +165,8 @@ public static class FileHelpers
                         $"The file exceeds {megabyteSizeLimit:N1} MB.");
                     }
                     else if (!IsValidFileExtensionAndSignature(
-                        contentDisposition.FileName.Value, memoryStream, 
-                        permittedExtensions))
+                                 contentDisposition.FileName.Value, memoryStream, 
+                                 permittedExtensions))
                     {
                         modelState.AddModelError("File",
                             "The file type isn't permitted or the file's " +
@@ -194,7 +191,7 @@ public static class FileHelpers
 
         private static bool IsValidFileExtensionAndSignature(string fileName, Stream data, string[] permittedExtensions)
         {
-            if (string.IsNullOrEmpty(fileName) || data == null || data.Length == 0)
+            if (string.IsNullOrEmpty(fileName) || data.Length == 0)
             {
                 return false;
             }
@@ -240,25 +237,6 @@ public static class FileHelpers
 
                     return true;
                 }
-
-                // Uncomment the following code block if you must permit
-                // files whose signature isn't provided in the _fileSignature
-                // dictionary. We recommend that you add file signatures
-                // for files (when possible) for all file types you intend
-                // to allow on the system and perform the file signature
-                // check.
-                /*
-                if (!_fileSignature.ContainsKey(ext))
-                {
-                    return true;
-                }
-                */
-
-                // File signature check
-                // --------------------
-                // With the file signatures provided in the _fileSignature
-                // dictionary, the following code tests the input content's
-                // file signature.
                 var signatures = _fileSignature[ext];
                 var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
 

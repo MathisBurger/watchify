@@ -22,7 +22,7 @@ public class VideoController : AuthorizedControllerBase
     private readonly VideoService VideoService;
     private readonly IConfiguration Configuration;
     private readonly int _fileSizeLimit;
-    private readonly string[] _permittedExtensions = { ".jpg", ".png", ".mp4" };
+    private readonly string[] _permittedExtensions = { ".mov" };
 
     public VideoController(DbAccess db, IAuthorization auth, VideoService videoService, IConfiguration configuration)
     {
@@ -30,7 +30,7 @@ public class VideoController : AuthorizedControllerBase
         Auth = auth;
         VideoService = videoService;
         Configuration = configuration;
-        _fileSizeLimit = 2097152;
+        _fileSizeLimit = configuration.GetValue<int>("MaxVideoSize");
     }
 
     [RateLimitFilter(5, 10)]
