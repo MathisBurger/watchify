@@ -1,5 +1,5 @@
 import {NextPage} from "next";
-import {Button, Grid, TextField} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import FormTextField from "../components/form/FormTextField";
 import {useState} from "react";
 import {CreateVideo} from "../types/requests/CreateVideo";
@@ -34,7 +34,7 @@ const CreatePage: NextPage = () => {
             formData.append('key', files[0]);
             try {
                 await api.uploadVideo(formData, creationResult.id);
-                enqueueSnackbar("Successfully uploaded", {variant: "error"});
+                enqueueSnackbar("Successfully uploaded", {variant: "success"});
             } catch (e: any) {
                 enqueueSnackbar(e.message, {variant: "error"});
             }

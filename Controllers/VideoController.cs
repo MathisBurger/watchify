@@ -22,7 +22,7 @@ public class VideoController : AuthorizedControllerBase
     private readonly VideoService VideoService;
     private readonly IConfiguration Configuration;
     private readonly int _fileSizeLimit;
-    private readonly string[] _permittedExtensions = { ".mov" };
+    private readonly string[] _permittedExtensions = { ".mov", ".mp4", ".png" };
 
     public VideoController(DbAccess db, IAuthorization auth, VideoService videoService, IConfiguration configuration)
     {

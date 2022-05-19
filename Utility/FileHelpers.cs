@@ -50,7 +50,8 @@ public static class FileHelpers
                     new byte[] { 0x6D, 0x64, 0x61, 0x74 },
                     new byte[] { 0x77, 0x69, 0x64, 0x65 },
                     new byte[] { 0x70, 0x6E, 0x6F, 0x74 },
-                    new byte[] { 0x73, 0x6B, 0x69, 0x70 }
+                    new byte[] { 0x73, 0x6B, 0x69, 0x70 },
+                    new byte[] { 0x00, 0x00, 0x00, 0x14 }
                 }
             },
             {
@@ -239,7 +240,6 @@ public static class FileHelpers
                 }
                 var signatures = _fileSignature[ext];
                 var headerBytes = reader.ReadBytes(signatures.Max(m => m.Length));
-
                 return signatures.Any(signature => 
                     headerBytes.Take(signature.Length).SequenceEqual(signature));
             }
