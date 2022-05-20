@@ -24,7 +24,7 @@
     <ItemGroup>
       <Folder Include="ClientApp" />
       <Folder Include="Migrations" />
-      <Folder Include="videos" />
+      <Folder Include="wwwroot\videos" />
     </ItemGroup>
 
 </Project>

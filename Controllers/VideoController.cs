@@ -22,7 +22,7 @@ public class VideoController : AuthorizedControllerBase
     private readonly VideoService VideoService;
     private readonly IConfiguration Configuration;
     private readonly int _fileSizeLimit;
-    private readonly string[] _permittedExtensions = { ".mov", ".mp4", ".png" };
+    private readonly string[] _permittedExtensions = { ".mov" };
 
     public VideoController(DbAccess db, IAuthorization auth, VideoService videoService, IConfiguration configuration)
     {
@@ -111,7 +111,7 @@ public class VideoController : AuthorizedControllerBase
                     }
 
                     using (var targetStream = System.IO.File.Create(
-                        Path.Combine("./videos/", trustedFileNameForFileStorage)))
+                        Path.Combine("wwwroot/videos/", trustedFileNameForFileStorage)))
                     {
                         await targetStream.WriteAsync(streamedFileContent);
                     }

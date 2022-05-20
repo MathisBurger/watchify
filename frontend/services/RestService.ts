@@ -9,6 +9,7 @@ export default class RestService {
      * @param body The request body if its given
      * @param contentType The content type of the request
      * @param emptyResponse If the response should be empty
+     * @param blob If the response should be returned as blob
      * @return Promise<T> The generic promise response
      * @throws Error If the status code is not 200
      */
@@ -17,8 +18,9 @@ export default class RestService {
         path: string,
         body?: any,
         contentType?: string,
-        emptyResponse: boolean = false
-    ): Promise<T> {
+        emptyResponse: boolean = false,
+        blob: boolean = false
+    ): Promise<T|Blob> {
         const fetchResult = await window.fetch(path, {
             body: body,
             method: method,
@@ -38,6 +40,9 @@ export default class RestService {
         if (fetchResult.status === 204) {
             return {} as any;
         }
+        if (blob) {
+            return await fetchResult.blob();
+        }
         if (!emptyResponse) {
             return (await fetchResult.json()) as T;
         }
@@ -48,9 +53,10 @@ export default class RestService {
      * The general GET request.
      *
      * @param path The path to the endpoint
+     * @param blob If the response should be returned as blob
      * @return Promise<T> The response as generic promise
      */
-    protected async get<T>(path: string): Promise<T> {
+    protected async get<T>(path: string, blob: boolean = false): Promise<T|Blob> {
         return await RestService.fetchEndpoint<T>("GET", path, undefined, 'application/json');
     }
 
@@ -63,7 +69,7 @@ export default class RestService {
      * @param contentType The content type that is used for the request
      * @return Promise<T> The response as generic promise
      */
-    protected async post<T>(path: string, body: any, emptyResponse: boolean = false, contentType?: string): Promise<T> {
+    protected async post<T>(path: string, body: any, emptyResponse: boolean = false, contentType?: string): Promise<T|Blob> {
         return await RestService.fetchEndpoint<T>("POST", path, body, contentType, emptyResponse);
     }
 
@@ -73,7 +79,7 @@ export default class RestService {
      * @param path The path to the REST endopint.
      * @param body The body of the delete request
      */
-    protected async delete<T>(path: string, body?: any): Promise<T> {
+    protected async delete<T>(path: string, body?: any): Promise<T|Blob> {
         return await RestService.fetchEndpoint<T>("DELETE", path, body, 'application/json');
     }
 }

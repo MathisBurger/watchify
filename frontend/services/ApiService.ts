@@ -2,7 +2,7 @@ import RestService from "./RestService";
 import {RegisterResponse} from "../types/responses/RegisterResponse";
 import {CreateVideo} from "../types/requests/CreateVideo";
 
-const ORIGIN = 'https://localhost:7220'
+export const ORIGIN = 'https://localhost:7220'
 
 class ApiService extends RestService {
     
@@ -17,7 +17,7 @@ class ApiService extends RestService {
         return await this.post<RegisterResponse>(`${ORIGIN}/Auth/Register`, JSON.stringify({
             username, 
             password,
-        }), false, 'application/json')
+        }), false, 'application/json') as RegisterResponse
     }
     
     public async me(): Promise<any> {
