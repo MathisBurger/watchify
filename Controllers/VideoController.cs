@@ -90,7 +90,7 @@ public class VideoController : AuthorizedControllerBase
                     var trustedFileNameForDisplay = WebUtility.HtmlEncode(
                             contentDisposition.FileName.Value);
                     var trustedFileNameForFileStorage =
-                        videoId.ToString() + '.' + trustedFileNameForDisplay.Split(".").Last().ToString();
+                        videoId.ToString() + '.' + ".mp4";
 
                     // **WARNING!**
                     // In the following example, the file is saved without

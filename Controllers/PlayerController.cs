@@ -29,10 +29,10 @@ public class PlayerController : AuthorizedControllerBase
         video.Views += 1;
         Db.EntityManager.Videos.Update(video);
         await Db.EntityManager.SaveChangesAsync();
-        var path = Path.GetFullPath(Url.Content(Path.Combine("wwwroot", "videos", videoId.ToString() + ".mov")));
+        var path = Path.GetFullPath(Url.Content(Path.Combine("wwwroot", "videos", videoId.ToString() + ".mp4")));
         return PhysicalFile(
             path,
-            "application/octet-stream",
+            "video/mp4",
             enableRangeProcessing: true
             );
     }
