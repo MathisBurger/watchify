@@ -1,6 +1,7 @@
 import RestService from "./RestService";
 import {RegisterResponse} from "../types/responses/RegisterResponse";
 import {CreateVideo} from "../types/requests/CreateVideo";
+import {VideoLikeStatus} from "../types/responses/VideoLikeStatus";
 
 export const ORIGIN = 'https://localhost:7220'
 
@@ -30,6 +31,18 @@ class ApiService extends RestService {
     
     public async uploadVideo(formData: FormData, videoID: string): Promise<any> {
         return await this.post<any>(`${ORIGIN}/Video/UploadVideo?videoId=${videoID}`, formData, true, undefined);
+    }
+    
+    public async getVideoMeta(videoId: string): Promise<any> {
+        return await this.get<any>(`${ORIGIN}/Player/GetVideoMetaData?videoId=${videoId}`)
+    }
+    
+    public async likeVideo(videoId: string): Promise<any> {
+        return await this.post<any>(`${ORIGIN}/Player/LikeVideo?videoId=${videoId}`, {});
+    }
+    
+    public async getLikedStatus(videoId: string): Promise<VideoLikeStatus> {
+        return await this.get<VideoLikeStatus>(`${ORIGIN}/Player/GetLikeStatus?videoId=${videoId}`) as VideoLikeStatus;
     }
 }
 

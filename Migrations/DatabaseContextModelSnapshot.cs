@@ -22,6 +22,36 @@ namespace watchify.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("UserVideo", b =>
+                {
+                    b.Property<Guid>("DislikedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("DislikedVideosId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("DislikedById", "DislikedVideosId");
+
+                    b.HasIndex("DislikedVideosId");
+
+                    b.ToTable("UserVideo");
+                });
+
+            modelBuilder.Entity("UserVideo1", b =>
+                {
+                    b.Property<Guid>("LikedById")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("LikedVideosId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("LikedById", "LikedVideosId");
+
+                    b.HasIndex("LikedVideosId");
+
+                    b.ToTable("UserVideo1");
+                });
+
             modelBuilder.Entity("watchify.Models.Database.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -88,15 +118,50 @@ namespace watchify.Migrations
                     b.ToTable("Videos");
                 });
 
+            modelBuilder.Entity("UserVideo", b =>
+                {
+                    b.HasOne("watchify.Models.Database.User", null)
+                        .WithMany()
+                        .HasForeignKey("DislikedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("watchify.Models.Database.Video", null)
+                        .WithMany()
+                        .HasForeignKey("DislikedVideosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("UserVideo1", b =>
+                {
+                    b.HasOne("watchify.Models.Database.User", null)
+                        .WithMany()
+                        .HasForeignKey("LikedById")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("watchify.Models.Database.Video", null)
+                        .WithMany()
+                        .HasForeignKey("LikedVideosId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("watchify.Models.Database.Video", b =>
                 {
                     b.HasOne("watchify.Models.Database.User", "Owner")
-                        .WithMany()
+                        .WithMany("PublishedVideo")
                         .HasForeignKey("OwnerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Owner");
+                });
+
+            modelBuilder.Entity("watchify.Models.Database.User", b =>
+                {
+                    b.Navigation("PublishedVideo");
                 });
 #pragma warning restore 612, 618
         }

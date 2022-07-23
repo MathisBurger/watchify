@@ -1,10 +1,19 @@
 import type { AppProps } from 'next/app'
-import React from 'react';
+import React, {useEffect} from 'react';
 import Head from 'next/head';
 import '../styles/globals.scss';
 import {SnackbarProvider} from "notistack";
+import Navbar from "../components/Navbar";
 
 function MyApp({ Component, pageProps }: AppProps) {
+    
+    useEffect(() => {
+        const body = document.querySelector('body');
+        if (body) {
+            body.style.margin = '0';
+            body.style.padding = '0';
+        }
+    })
   return (
       <React.Fragment>
         <Head>
@@ -14,6 +23,7 @@ function MyApp({ Component, pageProps }: AppProps) {
           <title>Watchify</title>
         </Head>
           <SnackbarProvider>
+              <Navbar />
               <Component {...pageProps} />
           </SnackbarProvider>
       </React.Fragment>

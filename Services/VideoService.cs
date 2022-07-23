@@ -21,16 +21,20 @@ public class VideoService
             throw new Exception("User is not logged in currently");
         }
         
-        var video = new Video();
-        video.Title = request.Title;
-        video.Category = request.Category;
-        video.Description = request.Description;
-        video.Tags = request.Tags;
-        video.Owner = owner;
-        video.Dislikes = 0;
-        video.Likes = 0;
-        video.Views = 0;
+        var video = new Video
+        {
+            Title = request.Title,
+            Category = request.Category,
+            Description = request.Description,
+            Tags = request.Tags,
+            Owner = owner,
+            Dislikes = 0,
+            Likes = 0,
+            Views = 0
+        };
+        owner.PublishedVideo.Add(video);
         Db.EntityManager.Videos.Add(video);
+        Db.EntityManager.Users.Update(owner);
         await Db.EntityManager.SaveChangesAsync();
         return video;
     }

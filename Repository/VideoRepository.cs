@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using watchify.Models.Database;
 using watchify.Shared;
 
@@ -14,6 +15,9 @@ public class VideoRepository : IRepository<Video?>
 
     public async Task<Video?> FindOneById(Guid id)
     {
-        return await ctx.Videos.FindAsync(id);
+        return await ctx.Videos
+            .Include(v => v.Owner)
+            .Include(v => v.LikedBy)
+            .FirstOrDefaultAsync(v => v.Id == id);
     }
 }
