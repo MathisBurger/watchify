@@ -40,6 +40,10 @@ class ApiService extends RestService {
     public async likeVideo(videoId: string): Promise<any> {
         return await this.post<any>(`${ORIGIN}/Player/LikeVideo?videoId=${videoId}`, {});
     }
+
+    public async dislikeVideo(videoId: string): Promise<any> {
+        return await this.post<any>(`${ORIGIN}/Player/DislikeVideo?videoId=${videoId}`, {});
+    }
     
     public async getLikedStatus(videoId: string): Promise<VideoLikeStatus> {
         return await this.get<VideoLikeStatus>(`${ORIGIN}/Player/GetLikeStatus?videoId=${videoId}`) as VideoLikeStatus;

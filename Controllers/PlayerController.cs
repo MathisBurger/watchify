@@ -86,6 +86,43 @@ public class PlayerController : AuthorizedControllerBase
         await Db.EntityManager.SaveChangesAsync();
         return video;
     }
+    
+    [HttpPost("[action]")]
+    [RateLimitFilter(5, 10)]
+    [TypeFilter(typeof(FiltersAuthorization))]
+    public async Task<ActionResult<Video>> DislikeVideo([FromQuery] Guid videoId)
+    {
+        var video = await Db.VideoRepository.FindOneById(videoId);
+        if (null == video)
+        {
+            return BadRequest();
+        }
+
+        if (video.DislikedBy.Contains(AuthorizedUser))
+        {
+            video.Dislikes -= 1;
+            video.DislikedBy.Remove(AuthorizedUser);
+            AuthorizedUser.DislikedVideos.Remove(video);
+            return Ok(video);
+        }
+        else
+        {
+            video.Dislikes += 1;
+            video.DislikedBy.Add(AuthorizedUser);
+            AuthorizedUser.DislikedVideos.Add(video);
+        }
+
+        if (video.LikedBy.Contains(AuthorizedUser))
+        {
+            video.Likes -= 1;
+            AuthorizedUser.LikedVideos.Remove(video);
+        }
+
+        Db.EntityManager.Users.Update(AuthorizedUser);
+        Db.EntityManager.Videos.Update(video);
+        await Db.EntityManager.SaveChangesAsync();
+        return video;
+    } 
 
     [HttpGet("[action]")]
     [RateLimitFilter(5, 10)]

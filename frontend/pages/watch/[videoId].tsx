@@ -47,7 +47,17 @@ const Watch: NextPage = () => {
             return;
         }
         await apiService.likeVideo(videoId as string);
-        setLikedStatus({...likedStatus, liked: !likedStatus.liked});
+        setLikedStatus(await apiService.getLikedStatus(videoId as string));
+    }
+
+    const dislikeVideo = async () => {
+        const currentUser = await apiService.me();
+        if (!currentUser) {
+            alert("You are not logged in");
+            return;
+        }
+        await apiService.dislikeVideo(videoId as string);
+        setLikedStatus(await apiService.getLikedStatus(videoId as string));
     }
     
     if (metaData == null) return <></>;
@@ -67,7 +77,9 @@ const Watch: NextPage = () => {
                         <Box onClick={likeVideo}>
                             <LikeBox likeType={LikeType.Like} checked={likedStatus.liked} count={metaData.likes} />
                         </Box>
-                        <LikeBox likeType={LikeType.Dislike} checked={likedStatus.disliked} count={metaData.dislikes} />
+                        <Box onClick={dislikeVideo}>
+                            <LikeBox likeType={LikeType.Dislike} checked={likedStatus.disliked} count={metaData.dislikes} />
+                        </Box>
                     </div>
                 </div>
             </div>
