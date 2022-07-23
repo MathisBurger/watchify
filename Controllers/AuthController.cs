@@ -23,7 +23,7 @@ public class AuthController : ControllerBase
     [HttpPost("[action]")]
     public async Task<ActionResult<User>> Register([FromBody] RegisterRequest request)
     {
-        return await Db.UserRepository.RegisterUser(request);
+        return Ok(await Db.UserRepository.RegisterUser(request));
     }
     
     /// <summary>
@@ -53,5 +53,5 @@ public class AuthController : ControllerBase
         Response.Cookies.Append(Constants.SESSION_COOKIE_NAME, sessionJwt, cookieOptions);
         Response.Headers.AccessControlExposeHeaders = "Set-Cookie";
         return Ok();
-    } 
+    }
 }

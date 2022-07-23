@@ -6,13 +6,13 @@ using watchify.Shared;
 
 namespace watchify.Repository;
 
-public class UserRepository
+public class UserRepository : IRepository<User?>
 {
 
-    private readonly DatabaseContext ctx;
+    private readonly IContext ctx;
     private readonly IPasswordHasher hasher;
 
-    public UserRepository(DatabaseContext ctx, IPasswordHasher hasher)
+    public UserRepository(IContext ctx, IPasswordHasher hasher)
     {
         this.ctx = ctx;
         this.hasher = hasher;
@@ -47,4 +47,8 @@ public class UserRepository
             .FirstOrDefaultAsync();
     }
 
+    public async Task<User?> FindOneById(Guid id)
+    {
+        return await ctx.Users.FindAsync(id);
+    }
 }

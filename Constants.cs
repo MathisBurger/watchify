@@ -10,5 +10,5 @@ public class Constants
     /// <summary>
     /// The name of the session cookie
     /// </summary>
-    public const string SESSION_COOKIE_NAME = "digify.session";
+    public const string SESSION_COOKIE_NAME = "watchify.session";
 }

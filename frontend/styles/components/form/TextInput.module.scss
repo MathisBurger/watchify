@@ -1,0 +1,22 @@
+.inputContainer {
+  width: fit-content;
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.inputContainer .label {
+  font-family: 'Roboto', sans-serif;
+  color: #656565;
+}
+.inputContainer input {
+  padding: 10px;
+  outline: none;
+  font-size: 1.3em;
+  border: 2px solid #c0c0c0;
+  border-radius: 10px;
+  transition: .3s;
+}
+.inputContainer input:focus {
+  box-shadow: 2px 2px 2px #c4c4c4;
+}

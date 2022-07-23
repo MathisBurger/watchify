@@ -1,0 +1,24 @@
+.registerContainer {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+}
+
+.registerBox {
+  padding: 20px;
+  border: 1px solid #777777;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  box-shadow: 4px 4px 4px #e0e0e0;
+}
+.registerLink {
+  color: #0f82cb;
+  text-underline: #0d70ab;
+  padding: 0;
+  margin: 0;
+  align-self: center;
+  cursor: pointer;
+}

@@ -3,12 +3,13 @@ using watchify.Models.Database;
 
 namespace watchify.Shared;
 
-public class DatabaseContext : DbContext
+public class DatabaseContext : DbContext, IContext
 {
     private readonly IConfiguration config;
     
     public DbSet<User> Users { get; set; }
-    
+    public DbSet<Video> Videos { get; set; }
+
     public DatabaseContext(IConfiguration config)
     {
         this.config = config;
